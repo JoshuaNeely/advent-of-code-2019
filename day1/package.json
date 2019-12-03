@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "compile": "tsc",
-    "compile-watch": "tsc -w",
+    "runit": "ts-node src/fuel-calculation.ts",
     "test": "ts-node -r tsconfig-paths/register node_modules/jasmine/bin/jasmine --config=jasmine.json",
     "coverage": "nyc -r text -e .ts -x \"tests/*.test.ts\" npm run test"
   },
