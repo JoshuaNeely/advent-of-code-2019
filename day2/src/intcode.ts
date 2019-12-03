@@ -7,6 +7,8 @@ enum Ops {
 }
 
 export function processIntcode(intcode: Intcode, opcodeIndex:number=0): Intcode {
+  const deepCopy = intcode.slice();
+
   const opcode = intcode[opcodeIndex];
   if (opcode == Ops.END) {
     return intcode;
@@ -20,9 +22,9 @@ export function processIntcode(intcode: Intcode, opcodeIndex:number=0): Intcode 
   const rightVal = intcode[rightIndex];
 
   const result = operate(opcode, leftVal, rightVal);
-  intcode[resultIndex] = result;
+  deepCopy[resultIndex] = result;
 
-  return processIntcode(intcode, opcodeIndex+4);
+  return processIntcode(deepCopy, opcodeIndex+4);
 }
 
 function operate(opcode: Ops, left: number, right: number): number {
@@ -35,4 +37,26 @@ function operate(opcode: Ops, left: number, right: number): number {
   else {
     throw new Error(`Unexpected opcode ${opcode}`);
   }
+}
+
+/**
+ *  Take an intcode as input
+ *  Replace address 1 with an input noun
+ *  Replace address 2 with an input verb
+ *  THEN process the intcode
+ *  Return output NOW held in address 0
+ */
+export function intcodeCalculator(intcode: Intcode, noun: number, verb: number): number {
+  const deepCopy = intcode.slice();
+  const nounPosition = 1;
+  const verbPosition = 2;
+  const outputPosition = 0;
+
+  deepCopy[nounPosition] = noun;
+  deepCopy[verbPosition] = verb;
+
+  const resultIntcode = processIntcode(deepCopy);
+  const result = resultIntcode[outputPosition];
+
+  return result;
 }
