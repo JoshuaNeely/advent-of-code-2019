@@ -6,6 +6,11 @@ enum Ops {
   END = 99
 }
 
+export interface NounVerbGroup {
+  noun: number;
+  verb: number;
+}
+
 export function processIntcode(intcode: Intcode, opcodeIndex:number=0): Intcode {
   const deepCopy = intcode.slice();
 
@@ -59,4 +64,18 @@ export function intcodeCalculator(intcode: Intcode, noun: number, verb: number):
   const result = resultIntcode[outputPosition];
 
   return result;
+}
+
+export function inputDeducer(intcode: Intcode, expectedOutput: number): NounVerbGroup {
+  // we know inputs must be between 0 and 99, inclusive
+  // brute force it till we get it
+  for (let i_verb=0; i_verb<100; i_verb++) {
+    for (let i_noun=0; i_noun<100; i_noun++) {
+      const result = intcodeCalculator(intcode, i_noun, i_verb);
+      if (result == expectedOutput) {
+        return {"noun": i_noun, "verb": i_verb};
+      }
+    }
+  }
+  throw new Error(`Failed to find correct verb/noun pair that matches ${expectedOutput}`);
 }
