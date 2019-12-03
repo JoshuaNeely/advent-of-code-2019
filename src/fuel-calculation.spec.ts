@@ -3,8 +3,8 @@ import { calculateFuel, reducer } from "src/fuel-calculation";
 const testData = [
   {mass: 12, fuel: 2},
   {mass: 14, fuel: 2},
-  {mass: 1969, fuel: 654},
-  {mass: 100756, fuel: 33583},
+  {mass: 1969, fuel: 966},
+  {mass: 100756, fuel: 50346},
 ]
 
 describe('calculateFuel', function() {
