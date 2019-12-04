@@ -1,7 +1,9 @@
-import { calculateClosestIntersection, intersects, getIntersection } from "./manhattanWires";
+import { intersects, getIntersection, calculateManhattan,
+         calculateClosestIntersectionDistance,
+         calculateClosestIntersectionCoordinate } from "./manhattanWires";
 import { Wire, Coordinate, OrthogonalSegment, Axis } from "./manhattanWires";
 
-describe('calculateClosestIntersection', function() {
+describe('calculateClosestIntersectionDistance', function() {
   const testData = [
     {
       wire1: ["R75","D30","R83","U83","L12","D49","R71","U7","L72"],
@@ -16,8 +18,54 @@ describe('calculateClosestIntersection', function() {
   ]
 
   for (let testDatum of testData) {
-    it(`should find the closest intersection with ${testDatum.wire1} and ${testDatum.wire2}`, function() {
-      const result = calculateClosestIntersection(testDatum.wire1, testDatum.wire2);
+    it(`should find the closest intersection distance with 
+        ${testDatum.wire1} and ${testDatum.wire2}`, function() {
+      const result = calculateClosestIntersectionDistance(testDatum.wire1, testDatum.wire2);
+      expect(result).toEqual(testDatum.correctOutput);
+    });
+  }
+});
+
+describe('calculateClosestIntersectionCoordinate', function() {
+  const testData = [
+    {
+      wire1: ["R8","U5","L5","D3"],
+      wire2: ["U7","R6","D4","L4"],
+      correctOutput: {x: 3, y: 3}
+    }
+  ]
+
+  for (let testDatum of testData) {
+    it(`should find the closest intersection coorindate with 
+        ${testDatum.wire1} and ${testDatum.wire2}`, function() {
+      const result = calculateClosestIntersectionCoordinate(testDatum.wire1, testDatum.wire2);
+      expect(result).toEqual(testDatum.correctOutput);
+    });
+  }
+});
+
+describe ('calculateManhattan', function() {
+  const testData = [
+    {
+      segment: {
+        coordinate1: {x: 3, y: 2},
+        coordinate2: {x: 3, y: 9}
+      },
+      correctOutput: 7
+    },
+    {
+      segment: {
+        coordinate1: {x: 0, y: 0},
+        coordinate2: {x: 3, y: 9}
+      },
+      correctOutput: 12
+    }
+  ]
+
+  for (let testDatum of testData) {
+    it(`should correctly calculate manhattan distance between the
+        coordinates in a segment ${testDatum.segment}`, function() {
+      const result = calculateManhattan(testDatum.segment);
       expect(result).toEqual(testDatum.correctOutput);
     });
   }
@@ -87,7 +135,8 @@ describe ('intersection functions', function() {
 
   describe('getIntersection', function() {
     for (let testDatum of testData) {
-      it(`should return correct intersection coordinate or null for ${testDatum.s1} and ${testDatum.s2}`, function() {
+      it(`should return correct intersection coordinate or null for 
+          ${testDatum.s1} and ${testDatum.s2}`, function() {
         const result = getIntersection(testDatum.s1, testDatum.s2);
         expect(result).toEqual(testDatum.intersectionCoordinate);
       });

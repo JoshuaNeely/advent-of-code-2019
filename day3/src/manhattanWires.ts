@@ -19,8 +19,17 @@ export interface OrthogonalSegment extends Segment {
   axis: Axis;
 }
 
-export function calculateClosestIntersection(wire1: Wire, wire2: Wire): number {
+export function calculateClosestIntersectionDistance(wire1: Wire, wire2: Wire): number {
   return 123;
+}
+
+export function calculateClosestIntersectionCoordinate(wire1: Wire, wire2: Wire): Coordinate {
+  return {x: 42, y: 42};
+}
+
+export function calculateManhattan(segment: Segment): number {
+  return Math.abs(segment.coordinate1.x - segment.coordinate2.x) +
+         Math.abs(segment.coordinate1.y - segment.coordinate2.y);
 }
 
 export function intersects(segment1: OrthogonalSegment,
@@ -45,5 +54,13 @@ export function intersects(segment1: OrthogonalSegment,
 
 export function getIntersection(segment1: OrthogonalSegment,
                                 segment2: OrthogonalSegment): Coordinate | null {
+  if (intersects(segment1, segment2)) {
+    if (segment1.axis == Axis.X) {
+      return {x: segment2.coordinate1.x, y:segment1.coordinate1.y};
+    }
+    else {
+      return {x: segment1.coordinate1.x, y:segment2.coordinate1.y};
+    }
+  }
   return null;
 }
