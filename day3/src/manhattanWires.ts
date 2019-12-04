@@ -23,10 +23,23 @@ export function calculateClosestIntersectionDistance(wire1: Wire, wire2: Wire): 
   return 123;
 }
 
-export function calculateClosestIntersectionCoordinate(
-  wire1: Wire, wire2: Wire): Coordinate {
+export function getAllIntersectingCoordinates(
+  wire1: Wire, wire2: Wire): Coordinate[] {
+  const segmentList1: OrthogonalSegment[] = convertWireToOrthogonalSegmentList(wire1);
+  const segmentList2: OrthogonalSegment[] = convertWireToOrthogonalSegmentList(wire2);
 
-  return {x: 42, y: 42};
+  let intersectingCoordinates = [];
+
+  for (let seg1 of segmentList1) {
+    for (let seg2 of segmentList2) {
+      const intersectionCoordinate = getIntersection(seg1, seg2);
+      if (intersectionCoordinate) {
+        intersectingCoordinates.push(intersectionCoordinate);
+      }
+    }
+  }
+
+  return intersectingCoordinates;
 }
 
 export function convertWireToOrthogonalSegmentList(wire: Wire): OrthogonalSegment[] {
@@ -93,17 +106,28 @@ export function intersects(segment1: OrthogonalSegment,
   if (segment1.axis == segment2.axis) {
     return false;
   }
+
+  // yuuuuuuck
+  const s1X1 = segment1.coordinate1.x;
+  const s1X2 = segment1.coordinate2.x;
+  const s1Y1 = segment1.coordinate1.y;
+  const s1Y2 = segment1.coordinate2.y;
+  const s2X1 = segment2.coordinate1.x;
+  const s2X2 = segment2.coordinate2.x;
+  const s2Y1 = segment2.coordinate1.y;
+  const s2Y2 = segment2.coordinate2.y;
+
   if (segment1.axis == Axis.X) {
-    const boundX1 = segment1.coordinate1.x;
-    const boundX2 = segment1.coordinate2.x;
-    const checkX = segment2.coordinate1.x;  // which is the same as coordinate2.x
-    return checkX > Math.min(boundX1, boundX2) && checkX < Math.max(boundX1, boundX2);
+    return s2X1 >= Math.min(s1X1, s1X2) &&
+           s2X1 <= Math.max(s1X1, s1X2) &&
+           s1Y2 <= Math.max(s2Y1, s2Y2) &&
+           s1Y2 >= Math.min(s2Y1, s2Y2);
   }
   else if (segment1.axis == Axis.Y) {
-    const boundY1 = segment1.coordinate1.y;
-    const boundY2 = segment1.coordinate2.y;
-    const checkY = segment2.coordinate1.y;  // which is the same as coordinate2.y
-    return checkY > Math.min(boundY1, boundY2) && checkY < Math.max(boundY1, boundY2);
+    return s2Y1 >= Math.min(s1Y1, s1Y2) &&
+           s2Y1 <= Math.max(s1Y1, s1Y2) &&
+           s1X2 <= Math.max(s2X1, s2X2) &&
+           s1X2 >= Math.min(s2X1, s2X2);
   }
   throw new Error(`Unexpected Axis ${segment1.axis}`);
 }

@@ -1,7 +1,7 @@
 import { intersects, getIntersection, calculateManhattan,
          convertWireToOrthogonalSegmentList,
          calculateClosestIntersectionDistance,
-         calculateClosestIntersectionCoordinate } from "./manhattanWires";
+         getAllIntersectingCoordinates } from "./manhattanWires";
 import { Wire, Coordinate, OrthogonalSegment, Axis } from "./manhattanWires";
 
 describe('calculateClosestIntersectionDistance', function() {
@@ -27,20 +27,30 @@ describe('calculateClosestIntersectionDistance', function() {
   }
 });
 
-describe('calculateClosestIntersectionCoordinate', function() {
+describe('getAllIntersectingCoordinates', function() {
   const testData = [
     {
       wire1: ["R8","U5","L5","D3"],
       wire2: ["U7","R6","D4","L4"],
-      correctOutput: {x: 3, y: 3}
+      correctOutput: [{x:0, y:0}, {x: 3, y: 3}, {x: 6, y: 5}]
     }
   ]
 
   for (let testDatum of testData) {
-    it(`should find the closest intersection coorindate with 
+    it(`should find all intersecting coordinates with wires 
         ${testDatum.wire1} and ${testDatum.wire2}`, function() {
-      const result = calculateClosestIntersectionCoordinate(testDatum.wire1, testDatum.wire2);
-      expect(result).toEqual(testDatum.correctOutput);
+      const result = getAllIntersectingCoordinates(testDatum.wire1, testDatum.wire2);
+
+      for (let expectedCoordinate of testDatum.correctOutput) {
+        let found = false;
+        for (let resultCoordinate of result) {
+          if (resultCoordinate.x == expectedCoordinate.x &&
+            resultCoordinate.y == expectedCoordinate.y) {
+            found = true;
+          }
+        }
+        expect(found).toBe(true);
+      }
     });
   }
 });
@@ -146,6 +156,20 @@ describe ('intersection functions', function() {
       s2: {
         coordinate1: {x: 2, y: 9},
         coordinate2: {x: 2, y: 0},
+        axis: Axis.Y
+      },
+      doesIntersect: false,
+      intersectionCoordinate: null
+    },
+    {
+      s1: {
+        coordinate1: {x: 0, y: 0},
+        coordinate2: {x: 8, y: 0},
+        axis: Axis.X
+      },
+      s2: {
+        coordinate1: {x: 6, y: 7},
+        coordinate2: {x: 6, y: 3},
         axis: Axis.Y
       },
       doesIntersect: false,
