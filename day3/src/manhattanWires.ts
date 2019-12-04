@@ -42,3 +42,8 @@ export function intersects(segment1: OrthogonalSegment,
   }
   throw new Error(`Unexpected Axis ${segment1.axis}`);
 }
+
+export function getIntersection(segment1: OrthogonalSegment,
+                                segment2: OrthogonalSegment): Coordinate | null {
+  return null;
+}

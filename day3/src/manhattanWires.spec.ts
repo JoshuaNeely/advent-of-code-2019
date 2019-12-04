@@ -1,4 +1,4 @@
-import { calculateClosestIntersection, intersects } from "./manhattanWires";
+import { calculateClosestIntersection, intersects, getIntersection } from "./manhattanWires";
 import { Wire, Coordinate, OrthogonalSegment, Axis } from "./manhattanWires";
 
 describe('calculateClosestIntersection', function() {
@@ -23,11 +23,12 @@ describe('calculateClosestIntersection', function() {
   }
 });
 
-describe('intersects', function() {
+describe ('intersection functions', function() {
   interface TestDatum {
     s1: OrthogonalSegment;
     s2: OrthogonalSegment;
-    correctOutput: boolean;
+    doesIntersect: boolean;
+    intersectionCoordinate: Coordinate | null;
   }
 
   const testData: TestDatum[] = [
@@ -42,7 +43,8 @@ describe('intersects', function() {
         coordinate2: {x: 5, y: 0},
         axis: Axis.Y
       },
-      correctOutput: true
+      doesIntersect: true,
+      intersectionCoordinate: {x: 5, y: 2}
     },
     {
       s1: {
@@ -55,7 +57,8 @@ describe('intersects', function() {
         coordinate2: {x: 6, y: 9},
         axis: Axis.X
       },
-      correctOutput: false
+      doesIntersect: false,
+      intersectionCoordinate: null
     },
     {
       s1: {
@@ -68,14 +71,26 @@ describe('intersects', function() {
         coordinate2: {x: 2, y: 0},
         axis: Axis.Y
       },
-      correctOutput: false
+      doesIntersect: false,
+      intersectionCoordinate: null 
     }
   ]
 
-  for (let testDatum of testData) {
-    it(`should determine if ${testDatum.s1} and ${testDatum.s2} intersect`, function() {
-      const result = intersects(testDatum.s1, testDatum.s2);
-      expect(result).toEqual(testDatum.correctOutput);
-    });
-  }
+  describe('intersects', function() {
+    for (let testDatum of testData) {
+      it(`should determine if ${testDatum.s1} and ${testDatum.s2} intersect`, function() {
+        const result = intersects(testDatum.s1, testDatum.s2);
+        expect(result).toEqual(testDatum.doesIntersect);
+      });
+    }
+  });
+
+  describe('getIntersection', function() {
+    for (let testDatum of testData) {
+      it(`should return correct intersection coordinate or null for ${testDatum.s1} and ${testDatum.s2}`, function() {
+        const result = getIntersection(testDatum.s1, testDatum.s2);
+        expect(result).toEqual(testDatum.intersectionCoordinate);
+      });
+    }
+  });
 });
