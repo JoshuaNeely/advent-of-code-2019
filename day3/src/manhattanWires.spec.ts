@@ -1,4 +1,5 @@
 import { intersects, getIntersection, calculateManhattan,
+         convertWireToOrthogonalSegmentList,
          calculateClosestIntersectionDistance,
          calculateClosestIntersectionCoordinate } from "./manhattanWires";
 import { Wire, Coordinate, OrthogonalSegment, Axis } from "./manhattanWires";
@@ -39,6 +40,34 @@ describe('calculateClosestIntersectionCoordinate', function() {
     it(`should find the closest intersection coorindate with 
         ${testDatum.wire1} and ${testDatum.wire2}`, function() {
       const result = calculateClosestIntersectionCoordinate(testDatum.wire1, testDatum.wire2);
+      expect(result).toEqual(testDatum.correctOutput);
+    });
+  }
+});
+
+describe ('convertWireToOrthogonalSegmentList', function() {
+  const testData = [
+    {
+      wire: ["R13","U2"],
+      correctOutput: [
+        {
+          coordinate1: {x:0, y:0},
+          coordinate2: {x:13, y:0},
+          axis: Axis.X
+        },
+        {
+          coordinate1: {x:13, y:0},
+          coordinate2: {x:13, y:2},
+          axis: Axis.Y
+        }
+      ]
+    }
+  ]
+
+  for (let testDatum of testData) {
+    it(`should convert a Wire to a list of OrthogonalSegments with wire 
+        ${testDatum.wire}`, function() {
+      const result = convertWireToOrthogonalSegmentList(testDatum.wire);
       expect(result).toEqual(testDatum.correctOutput);
     });
   }
