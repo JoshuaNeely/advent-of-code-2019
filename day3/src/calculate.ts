@@ -1,4 +1,5 @@
-import { calculateClosestIntersectionDistance, Wire } from "./manhattanWires";
+import { calculateClosestIntersectionDistance } from "./calculate-closest-intersection-distance";
+import { Wire } from "./interfaces";
 import { readFileSync } from 'fs';
 
 const wire1Data = readFileSync('./src/wire1Data.txt', 'utf-8');
